@@ -20,9 +20,13 @@ export default function SocketDemo() {
   const [isConnected, setIsConnected] = useState(false);
 
   useEffect(() => {
-    const socketInstance = io({
-      path: '/api/socketio',
-    });
+    // For Capacitor, we need to provide the full server URL.
+    // For local dev, undefined will make it connect to the same host.
+    const socketUrl = process.env.NEXT_PUBLIC_SOCKET_URL;
+
+    const socketInstance = socketUrl
+      ? io(socketUrl, { path: '/api/socketio', transports: ['websocket'] })
+      : io({ path: '/api/socketio', transports: ['websocket'] });
 
     setSocket(socketInstance);
 
